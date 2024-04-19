@@ -1,10 +1,15 @@
 import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { stylesTheme } from '../../theme';
+import TrendingMovies from '../components/TrendingMovies';
+import MovieList from '../components/MovieList';
 
 const Home = () => {
+    const [trending, setTrending] = useState([1, 2, 3, 4])
+    const [upcoming, setUpcoming] = useState([1, 2, 3, 4])
+    const [topRated, setTopRated] = useState([1, 2, 3, 4])
     return (
         <View style={styles.container}>
             <SafeAreaView style={{ marginBottom: 3 }} >
@@ -26,6 +31,13 @@ const Home = () => {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 10 }}>
                 {/* Trending Movies Carousel */}
+                <TrendingMovies data={trending} />
+
+                {/* Upcoming Movies */}
+                <MovieList title='Upcoming' data={upcoming} />
+
+                {/* Upcoming Movies */}
+                <MovieList title='Upcoming' data={upcoming} />
             </ScrollView>
         </View>
     )
