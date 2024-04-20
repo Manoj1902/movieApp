@@ -9,7 +9,7 @@ const TrendingMovies = ({ data }) => {
 
     const navigation = useNavigation()
 
-    const handleClick = () => {
+    const handleClick = (item) => {
         navigation.navigate('Movie', item)
     }
     return (

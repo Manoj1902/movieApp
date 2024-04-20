@@ -37,7 +37,7 @@ const Home = () => {
                 <MovieList title='Upcoming' data={upcoming} />
 
                 {/* Upcoming Movies */}
-                <MovieList title='Upcoming' data={upcoming} />
+                <MovieList title='Top Rated' data={topRated} />
             </ScrollView>
         </View>
     )
