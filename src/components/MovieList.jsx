@@ -1,17 +1,24 @@
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React from 'react'
-import { stylesTheme, theme } from '../../theme'
+import { theme } from '../../theme'
+import { useNavigation } from '@react-navigation/native'
 
 var { width, height } = Dimensions.get('window')
-const MovieList = ({ title, data, navigation }) => {
+const MovieList = ({ title, data, hideSeeAll }) => {
+    const navigation = useNavigation()
     const movieName = "Ant-Man and the Wasp: Quantumania"
     return (
         <View style={styles.container}>
             <View style={styles.title}>
                 <Text style={styles.titleText}>{title}</Text>
-                <TouchableOpacity>
-                    <Text style={styles.textTwo}>See All</Text>
-                </TouchableOpacity>
+                {
+                    !hideSeeAll && (
+                        <TouchableOpacity>
+                            <Text style={styles.textTwo}>See All</Text>
+                        </TouchableOpacity>
+                    )
+                }
+
             </View>
             <ScrollView
                 horizontal
@@ -21,7 +28,9 @@ const MovieList = ({ title, data, navigation }) => {
                 {
                     data.map((item, index) => {
                         return (
-                            <TouchableWithoutFeedback key={index} onPress={() => navigation.navigate('Movie', item)}>
+                            <TouchableWithoutFeedback
+                                key={index}
+                                onPress={() => navigation.push('Movie', item)}>
                                 <View style={styles.movieImageContainer}>
                                     <Image
                                         source={require('../images/antman.jpg')}

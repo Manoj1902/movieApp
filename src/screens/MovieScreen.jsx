@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { stylesTheme, theme } from '../../theme';
 import LinearGradient from 'react-native-linear-gradient';
 import Cast from '../components/Cast';
+import MovieList from '../components/MovieList';
 
 
 var { width, height } = Dimensions.get('window')
@@ -14,6 +15,7 @@ const MovieScreen = () => {
 
     const [isFavourite, setIsFavourite] = useState(false)
     const [cast, setCast] = useState([1, 2, 3, 4, 5])
+    const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5])
     const movieName = "Ant-Man and the Wasp: Quantumania"
 
     const { params: item } = useRoute()
@@ -90,7 +92,10 @@ const MovieScreen = () => {
 
             {/* Cast */}
 
-            <Cast cast={cast} />
+            <Cast cast={cast} navigation={navigation} />
+
+            {/* Similar movies */}
+            <MovieList title="Similar Movies" hideSeeAll={true} data={similarMovies} />
 
         </ScrollView>
     )

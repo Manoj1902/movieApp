@@ -1,7 +1,7 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 
-export default function Cast({ cast }) {
+export default function Cast({ cast, navigation }) {
     let personName = 'Allu Arjun'
     let characterName = 'Pushpa'
     return (
@@ -16,6 +16,7 @@ export default function Cast({ cast }) {
                     cast && cast.map((person, index) => {
                         return (
                             <TouchableOpacity
+                                onPress={() => navigation.navigate("Person", person)}
                                 key={index}
                                 style={{ marginRight: 16, alignItems: 'center' }}>
                                 <View style={styles.castImageContainer}>
