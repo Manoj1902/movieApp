@@ -5,11 +5,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { stylesTheme } from '../../theme';
 import TrendingMovies from '../components/TrendingMovies';
 import MovieList from '../components/MovieList';
+import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
     const [trending, setTrending] = useState([1, 2, 3, 4])
     const [upcoming, setUpcoming] = useState([1, 2, 3, 4])
     const [topRated, setTopRated] = useState([1, 2, 3, 4])
+    const navigation = useNavigation()
     return (
         <View style={styles.container}>
             <SafeAreaView style={{ marginBottom: 3 }} >
@@ -21,7 +23,7 @@ const Home = () => {
                         <Text style={stylesTheme.text}>M</Text>ovies
                     </Text>
 
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate("Search")}>
                         <Icon name='search' size={30} color='white' />
                     </TouchableOpacity>
                 </View>

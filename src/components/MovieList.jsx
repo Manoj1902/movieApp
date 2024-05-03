@@ -52,7 +52,8 @@ export default MovieList
 const styles = StyleSheet.create({
     container: {
         marginBottom: 32,
-        marginVertical: 16
+        marginVertical: 16,
+
     },
     title: {
         marginHorizontal: 16,

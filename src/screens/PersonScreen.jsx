@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { theme } from '../../theme';
 import { useNavigation } from '@react-navigation/native';
+import MovieList from '../components/MovieList';
 
 
 var { width, height } = Dimensions.get('window')
@@ -11,6 +12,7 @@ var { width, height } = Dimensions.get('window')
 const PersonScreen = () => {
 
     const [isFavourite, setIsFavourite] = useState(false)
+    const [personMovies, setPersonMovies] = useState([1, 2, 3, 4, 5])
     const navigation = useNavigation()
 
     return (
@@ -18,6 +20,7 @@ const PersonScreen = () => {
             flex: 1,
             backgroundColor: 'rgb(23,23,23)'
         }}
+            showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 20 }}>
             <SafeAreaView style={styles.headerContent}>
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -65,12 +68,32 @@ const PersonScreen = () => {
                     </Text>
                 </View>
 
-                <View>
-                    <View>
-                        <Text>Gender</Text>
-                        <Text>Male</Text>
+                <View style={styles.personInfoContainer}>
+                    <View style={styles.personInfo}>
+                        <Text style={styles.personInfoTitle}>Gender</Text>
+                        <Text style={styles.personInfoText}>Male</Text>
+                    </View>
+                    <View style={styles.personInfo}>
+                        <Text style={styles.personInfoTitle}>Birthday</Text>
+                        <Text style={styles.personInfoText}>19 Jul, 1996</Text>
+                    </View>
+                    <View style={styles.personInfo}>
+                        <Text style={styles.personInfoTitle}>Known for</Text>
+                        <Text style={styles.personInfoText}>Acting</Text>
+                    </View>
+                    <View style={styles.personInfolast}>
+                        <Text style={styles.personInfoTitle}>Popularity</Text>
+                        <Text style={styles.personInfoText}>80.0</Text>
                     </View>
                 </View>
+                <View style={styles.biographyContainer}>
+                    <Text style={styles.biographyTitle}>Biography</Text>
+                    <Text style={styles.biographyContent}>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique sint ut corporis ipsam provident assumenda ab voluptatum ipsum nobis inventore recusandae, ad praesentium facere laudantium commodi sequi, exercitationem nemo a dolorem pariatur officiis, eos asperiores sed. Saepe, fuga? Eum et perspiciatis dolore odio atque expedita nulla, amet tempora est omnis dolorem nisi at consequatur optio natus neque, rerum, mollitia earum hic nam delectus eius voluptas ipsa! Quidem, aspernatur. Ullam, illum. Repudiandae repellendus molestias assumenda dolorum molestiae possimus sunt fugiat eveniet magnam voluptas illum esse odio enim ea nihil facilis, labore error incidunt culpa ab placeat. Perferendis placeat deserunt veritatis nulla harum excepturi eveniet, magni nihil id officia voluptates numquam nam at quibusdam nesciunt blanditiis maiores adipisci sapiente quisquam cumque odio assumenda dicta quia. Ipsum vitae delectus repellendus, odio iusto, autem assumenda saepe doloremque, eaque minima maxime culpa. Sequi commodi aspernatur corporis in iste quas architecto odio totam, tempora repudiandae porro saepe cumque necessitatibus quaerat eveniet numquam molestiae voluptatibus recusandae quibusdam hic debitis omnis reprehenderit maiores tenetur. Veritatis vitae aperiam sed aspernatur nihil perspiciatis molestias consequatur voluptate, recusandae fugit facere animi aliquid voluptatem inventore doloremque iure repellendus praesentium delectus fugiat! Veniam, nisi quisquam magnam neque expedita fugiat distinctio magni animi placeat.</Text>
+                </View>
+
+                {/* Persons Movies */}
+                <MovieList title={"Movies"} hideSeeAll={true} data={personMovies} />
+
             </View>
 
         </ScrollView>
@@ -113,5 +136,49 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'rgb(115,115,115)',
         textAlign: 'center'
+    },
+    personInfoContainer: {
+        marginHorizontal: 12,
+        marginTop: 24,
+        padding: 16,
+        flexDirection: "row",
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgb(64, 64, 64)',
+        borderRadius: 9999,
+    },
+    personInfo: {
+        borderRightColor: 'rgb(163,163,163)',
+        borderRightWidth: 1,
+        paddingHorizontal: 18,
+        alignItems: 'center',
+    },
+    personInfolast: {
+        paddingHorizontal: 18,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    personInfoTitle: {
+        color: 'white',
+        fontWeight: 'bold',
+
+    },
+    personInfoText: {
+        color: 'rgb(212,212,212)',
+        fontSize: 14
+    },
+    biographyContainer: {
+        marginTop: 24,
+        marginHorizontal: 16,
+    },
+    biographyTitle: {
+        color: 'white',
+        fontSize: 18,
+        marginBottom: 8
+    },
+    biographyContent: {
+        color: 'rgb(163, 163, 163)',
+        letterSpacing: 0.4,
+        textAlign: 'justify'
     },
 })
