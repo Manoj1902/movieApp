@@ -7,6 +7,7 @@ import { stylesTheme, theme } from '../../theme';
 import LinearGradient from 'react-native-linear-gradient';
 import Cast from '../components/Cast';
 import MovieList from '../components/MovieList';
+import Loading from '../components/Loading';
 
 
 var { width, height } = Dimensions.get('window')
@@ -16,6 +17,7 @@ const MovieScreen = () => {
     const [isFavourite, setIsFavourite] = useState(false)
     const [cast, setCast] = useState([1, 2, 3, 4, 5])
     const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5])
+    const [loading, setLoading] = useState(false)
     const movieName = "Ant-Man and the Wasp: Quantumania"
 
     const { params: item } = useRoute()
@@ -37,18 +39,22 @@ const MovieScreen = () => {
                         <Icon name='heart-sharp' size={35} color={isFavourite ? theme.background : 'white'} />
                     </TouchableOpacity>
                 </SafeAreaView>
+                {
+                    loading ? (<Loading />) : (
+                        <View>
+                            <Image
+                                source={require('../images/pushpa.jpg')}
+                                style={{ width, height: height * 0.55 }} />
+                            <LinearGradient
+                                colors={['transparent', 'rgba(23,23,23,0.7)', 'rgba(23,23,23,1)']}
+                                style={styles.linearGradient}
+                                start={{ x: 0.5, y: 0 }}
+                                end={{ x: 0.5, y: 1 }}
+                            />
+                        </View>
+                    )
+                }
 
-                <View>
-                    <Image
-                        source={require('../images/pushpa.jpg')}
-                        style={{ width, height: height * 0.55 }} />
-                    <LinearGradient
-                        colors={['transparent', 'rgba(23,23,23,0.7)', 'rgba(23,23,23,1)']}
-                        style={styles.linearGradient}
-                        start={{ x: 0.5, y: 0 }}
-                        end={{ x: 0.5, y: 1 }}
-                    />
-                </View>
             </View>
 
 

@@ -6,11 +6,13 @@ import { stylesTheme } from '../../theme';
 import TrendingMovies from '../components/TrendingMovies';
 import MovieList from '../components/MovieList';
 import { useNavigation } from '@react-navigation/native';
+import Loading from '../components/Loading';
 
 const Home = () => {
     const [trending, setTrending] = useState([1, 2, 3, 4])
     const [upcoming, setUpcoming] = useState([1, 2, 3, 4])
     const [topRated, setTopRated] = useState([1, 2, 3, 4])
+    const [loading, setLoading] = useState(false)
     const navigation = useNavigation()
     return (
         <View style={styles.container}>
@@ -29,18 +31,23 @@ const Home = () => {
                 </View>
             </SafeAreaView>
 
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 10 }}>
-                {/* Trending Movies Carousel */}
-                <TrendingMovies data={trending} />
+            {
+                loading ? (<Loading />) : (
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{ paddingBottom: 10 }}>
+                        {/* Trending Movies Carousel */}
+                        <TrendingMovies data={trending} />
 
-                {/* Upcoming Movies */}
-                <MovieList title='Upcoming' data={upcoming} />
+                        {/* Upcoming Movies */}
+                        <MovieList title='Upcoming' data={upcoming} />
 
-                {/* Upcoming Movies */}
-                <MovieList title='Top Rated' data={topRated} />
-            </ScrollView>
+                        {/* Upcoming Movies */}
+                        <MovieList title='Top Rated' data={topRated} />
+                    </ScrollView>
+                )
+            }
+
         </View>
     )
 }
