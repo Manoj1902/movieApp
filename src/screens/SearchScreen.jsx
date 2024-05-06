@@ -12,7 +12,7 @@ var { width, height } = Dimensions.get('window')
 const SearchScreen = () => {
     const navigation = useNavigation()
     const [results, setResults] = useState([1, 2, 3, 4, 5])
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
 
     const movieName = "Pushpa"
 

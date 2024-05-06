@@ -1,5 +1,5 @@
 import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { stylesTheme } from '../../theme';
@@ -7,13 +7,28 @@ import TrendingMovies from '../components/TrendingMovies';
 import MovieList from '../components/MovieList';
 import { useNavigation } from '@react-navigation/native';
 import Loading from '../components/Loading';
+import { fetchTrendingMovies } from '../../api/moviedb';
 
 const Home = () => {
     const [trending, setTrending] = useState([1, 2, 3, 4])
     const [upcoming, setUpcoming] = useState([1, 2, 3, 4])
     const [topRated, setTopRated] = useState([1, 2, 3, 4])
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const navigation = useNavigation()
+
+
+    useEffect(() => {
+        getTrendingMovies();
+    }, [])
+
+    const getTrendingMovies = async () => {
+        const data = await fetchTrendingMovies()
+        console.log('Got trending Movies: ', data)
+        if (data && data.results) setTrending(data.results)
+        setLoading(false)
+    }
+
+
     return (
         <View style={styles.container}>
             <SafeAreaView style={{ marginBottom: 3 }} >
@@ -37,7 +52,7 @@ const Home = () => {
                         showsVerticalScrollIndicator={false}
                         contentContainerStyle={{ paddingBottom: 10 }}>
                         {/* Trending Movies Carousel */}
-                        <TrendingMovies data={trending} />
+                        {trending.length > 0 && <TrendingMovies data={trending} />}
 
                         {/* Upcoming Movies */}
                         <MovieList title='Upcoming' data={upcoming} />
