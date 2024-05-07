@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     logo: {
         fontSize: 30,
         lineHeight: 36,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color: 'white'
     }
 })
