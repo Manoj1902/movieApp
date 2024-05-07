@@ -1,25 +1,50 @@
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Dimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from '@react-navigation/native'
 import Loading from '../components/Loading'
-
+import { debounce } from 'lodash'
+import { fallbackMoviePoster, image185, searchMovies } from '../../api/moviedb'
 
 var { width, height } = Dimensions.get('window')
 
 const SearchScreen = () => {
     const navigation = useNavigation()
-    const [results, setResults] = useState([1, 2, 3, 4, 5])
+    const [results, setResults] = useState([])
     const [loading, setLoading] = useState(false)
 
     const movieName = "Pushpa"
+
+    const handleSearch = value => {
+        // console.log("value: ", value)
+        if (value && value.length > 2) {
+            setLoading(true)
+            searchMovies({
+                query: value,
+                include_adult: 'false',
+                language: 'en-US',
+                page: '1'
+            }).then(data => {
+                setLoading(false)
+                // console.log("Got Movies: ", data)
+                if (data && data.results) setResults(data.results)
+
+            })
+        } else {
+            setLoading(false)
+            setResults([])
+        }
+    }
+
+    const handleTextDebounce = useCallback(debounce(handleSearch, 0), [])
 
     return (
         <SafeAreaView style={{ backgroundColor: 'rgb(38, 38, 38);', flex: 1 }}>
             <View style={styles.searchContainer}>
                 <TextInput
+                    onChangeText={handleTextDebounce}
                     placeholder='Search Movies'
                     placeholderTextColor={'lightgray'}
                     style={styles.searchInput} />
@@ -51,11 +76,13 @@ const SearchScreen = () => {
                                                 onPress={() => navigation.navigate('Movie', item)}>
 
                                                 <View style={styles.searchResultItem}>
-                                                    <Image source={require('../images/pushpa.jpg')}
+                                                    <Image
+                                                        // source={require('../images/pushpa.jpg')}
+                                                        source={{ uri: image185(item?.poster_path) || fallbackMoviePoster }}
                                                         style={{ width: width * 0.44, height: height * 0.3, borderRadius: 24 }} />
                                                     <Text style={{ color: 'rgb(212, 212, 212)', marginLeft: 4 }}>
                                                         {
-                                                            movieName.lengt > 22 ? movieName.slice(0, 22) + "..." : movieName
+                                                            item?.title?.length > 22 ? item?.title?.slice(0, 22) + "..." : item?.title
                                                         }
                                                     </Text>
                                                 </View>

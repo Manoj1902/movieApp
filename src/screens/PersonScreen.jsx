@@ -1,22 +1,48 @@
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { theme } from '../../theme';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import MovieList from '../components/MovieList';
 import Loading from '../components/Loading';
+import { fallbackPersonImage, fetchPersonDetails, fetchPersonMovies, image342 } from '../../api/moviedb';
 
 
 var { width, height } = Dimensions.get('window')
 
 const PersonScreen = () => {
 
+    const { params: item } = useRoute()
     const [isFavourite, setIsFavourite] = useState(false)
-    const [personMovies, setPersonMovies] = useState([1, 2, 3, 4, 5])
+    const [personMovies, setPersonMovies] = useState([])
     const [loading, setLoading] = useState(false)
+    const [person, setPerson] = useState({})
 
     const navigation = useNavigation()
+
+
+    useEffect(() => {
+        setLoading(true)
+        // console.log("person: ", item)
+        getPersonDetails(item.id)
+        getPersonMovies(item.id)
+    }, [item])
+
+
+    const getPersonDetails = async id => {
+        const data = await fetchPersonDetails(id)
+        // console.log('Got person Data', data)
+        if (data) setPerson(data)
+        setLoading(false)
+    }
+
+    const getPersonMovies = async id => {
+        const data = await fetchPersonMovies(id)
+        console.log('Got person Movies', data)
+        if (data && data.cast) setPersonMovies(data.cast)
+    }
+
 
     return (
         <ScrollView style={{
@@ -53,12 +79,14 @@ const PersonScreen = () => {
                                 height: 288,
                                 width: 288,
                                 borderRadius: 9999,
-                                borderWidth: 1,
+                                borderWidth: 2,
                                 borderStyle: 'solid',
                                 borderColor: 'rgb(115,115,115)'
                             }} >
 
-                                <Image source={require('../images/alluarjun.jpg')}
+                                <Image
+                                    // source={require('../images/alluarjun.jpg')}
+                                    source={{ uri: image342(person?.profile_path) || fallbackPersonImage }}
                                     style={{ height: height * 0.43, width: width * 0.74 }} />
                             </View>
                         </View>
@@ -66,34 +94,40 @@ const PersonScreen = () => {
                         {/* Person Name */}
                         <View style={styles.personNameContainer}>
                             <Text style={styles.personNameText}>
-                                Allu Arjun
+                                {person?.name}
                             </Text>
                             <Text style={styles.personBirthPlaceText}>
-                                Chennai, Tamil Nadu
+                                {person?.place_of_birth}
                             </Text>
                         </View>
 
                         <View style={styles.personInfoContainer}>
                             <View style={styles.personInfo}>
                                 <Text style={styles.personInfoTitle}>Gender</Text>
-                                <Text style={styles.personInfoText}>Male</Text>
+                                <Text style={styles.personInfoText}>
+                                    {person?.gender == 1 ? "Female" : "Male"}
+                                </Text>
                             </View>
                             <View style={styles.personInfo}>
                                 <Text style={styles.personInfoTitle}>Birthday</Text>
-                                <Text style={styles.personInfoText}>19 Jul, 1996</Text>
+                                <Text style={styles.personInfoText}>{person?.birthday}</Text>
                             </View>
                             <View style={styles.personInfo}>
                                 <Text style={styles.personInfoTitle}>Known for</Text>
-                                <Text style={styles.personInfoText}>Acting</Text>
+                                <Text style={styles.personInfoText}>{person?.known_for_department}</Text>
                             </View>
                             <View style={styles.personInfolast}>
                                 <Text style={styles.personInfoTitle}>Popularity</Text>
-                                <Text style={styles.personInfoText}>80.0</Text>
+                                <Text style={styles.personInfoText}>{person?.popularity?.toFixed(2)} %</Text>
                             </View>
                         </View>
                         <View style={styles.biographyContainer}>
                             <Text style={styles.biographyTitle}>Biography</Text>
-                            <Text style={styles.biographyContent}>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Similique sint ut corporis ipsam provident assumenda ab voluptatum ipsum nobis inventore recusandae, ad praesentium facere laudantium commodi sequi, exercitationem nemo a dolorem pariatur officiis, eos asperiores sed. Saepe, fuga? Eum et perspiciatis dolore odio atque expedita nulla, amet tempora est omnis dolorem nisi at consequatur optio natus neque, rerum, mollitia earum hic nam delectus eius voluptas ipsa! Quidem, aspernatur. Ullam, illum. Repudiandae repellendus molestias assumenda dolorum molestiae possimus sunt fugiat eveniet magnam voluptas illum esse odio enim ea nihil facilis, labore error incidunt culpa ab placeat. Perferendis placeat deserunt veritatis nulla harum excepturi eveniet, magni nihil id officia voluptates numquam nam at quibusdam nesciunt blanditiis maiores adipisci sapiente quisquam cumque odio assumenda dicta quia. Ipsum vitae delectus repellendus, odio iusto, autem assumenda saepe doloremque, eaque minima maxime culpa. Sequi commodi aspernatur corporis in iste quas architecto odio totam, tempora repudiandae porro saepe cumque necessitatibus quaerat eveniet numquam molestiae voluptatibus recusandae quibusdam hic debitis omnis reprehenderit maiores tenetur. Veritatis vitae aperiam sed aspernatur nihil perspiciatis molestias consequatur voluptate, recusandae fugit facere animi aliquid voluptatem inventore doloremque iure repellendus praesentium delectus fugiat! Veniam, nisi quisquam magnam neque expedita fugiat distinctio magni animi placeat.</Text>
+                            <Text style={styles.biographyContent}>
+                                {
+                                    person?.biography || "NA"
+                                }
+                            </Text>
                         </View>
 
                         {/* Persons Movies */}
@@ -127,7 +161,7 @@ const styles = StyleSheet.create({
     },
     backButton: {
         borderRadius: 12,
-        backgroundColor: '#EAB308',
+        backgroundColor: theme.background,
         padding: 4
     },
     personNameContainer: {

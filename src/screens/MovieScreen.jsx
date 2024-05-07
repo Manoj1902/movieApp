@@ -8,6 +8,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Cast from '../components/Cast';
 import MovieList from '../components/MovieList';
 import Loading from '../components/Loading';
+import { fallbackMoviePoster, fetchMovieCredits, fetchMovieDetails, fetchSimilarMovies, image500 } from '../../api/moviedb';
 
 
 var { width, height } = Dimensions.get('window')
@@ -16,15 +17,43 @@ const MovieScreen = () => {
 
     const [isFavourite, setIsFavourite] = useState(false)
     const [cast, setCast] = useState([1, 2, 3, 4, 5])
-    const [similarMovies, setSimilarMovies] = useState([1, 2, 3, 4, 5])
+    const [similarMovies, setSimilarMovies] = useState([])
     const [loading, setLoading] = useState(false)
+    const [movie, setMovie] = useState({})
     const movieName = "Ant-Man and the Wasp: Quantumania"
 
     const { params: item } = useRoute()
     const navigation = useNavigation()
+
     useEffect(() => {
-        // call movie details api
+        // console.log('item id: ', item.id)
+        setLoading(true)
+        getMovieDetails(item.id)
+        getMovieCredits(item.id)
+        getSimilarMovies(item.id)
     }, [item])
+
+    const getMovieDetails = async id => {
+        const data = await fetchMovieDetails(id)
+        // console.log('Got Movie Details: ', data)
+        if (data) setMovie(data)
+        setLoading(false)
+    }
+
+    const getMovieCredits = async id => {
+        const data = await fetchMovieCredits(id)
+        // console.log('Got Movie Credits: ', data)
+        if (data && data.cast) setCast(data.cast)
+        // setLoading(false)
+    }
+
+    const getSimilarMovies = async id => {
+        const data = await fetchSimilarMovies(id)
+        // console.log('Got Similar Movie: ', data)
+        if (data && data.results) setSimilarMovies(data.results)
+        // setLoading(false)
+    }
+
     return (
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }} style={styles.scrollConteiner}>
             <StatusBar translucent backgroundColor="transparent" />
@@ -43,7 +72,8 @@ const MovieScreen = () => {
                     loading ? (<Loading />) : (
                         <View>
                             <Image
-                                source={require('../images/pushpa.jpg')}
+                                // source={require('../images/pushpa.jpg')}
+                                source={{ uri: image500(movie?.poster_path) || fallbackMoviePoster }}
                                 style={{ width, height: height * 0.55 }} />
                             <LinearGradient
                                 colors={['transparent', 'rgba(23,23,23,0.7)', 'rgba(23,23,23,1)']}
@@ -64,33 +94,42 @@ const MovieScreen = () => {
 
                 {/* Title */}
                 <Text style={styles.movieTitle}>
-                    {movieName}
+                    {movie?.title}
                 </Text>
 
 
                 {/* Status, Release, Runtime */}
-                <Text style={styles.movieStatusText}>
-                    Released • 2020 • 170min
-                </Text>
 
 
-                {/* generss */}
+                {
+                    movie?.id ? (
+                        <Text style={styles.movieStatusText}>
+                            {movie?.status} • {movie?.release_date?.split('-')[0]} • {movie?.runtime} min
+                        </Text>
+                    ) : null
+                }
+
+                {/* geners */}
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginHorizontal: 16, marginLeft: 8 }}>
-                    <Text>
-                        Action •
-                    </Text>
-                    <Text>
-                        Thrill •
-                    </Text>
-                    <Text>
-                        Drama
-                    </Text>
+
+                    {
+                        movie?.genres?.map((genre, index) => {
+                            let showDot = index + 1 != movie.genres.length
+                            return (
+                                <Text key={index} style={{ color: 'rgb(163 163 163);', fontWeight: '600', fontSize: 14, textAlign: 'center', marginBottom: 10 }}>
+                                    {genre?.name} {showDot ? '• ' : null}
+                                </Text>
+                            )
+                        })
+                    }
                 </View>
 
 
                 {/* Description */}
                 <Text style={styles.descriptionText}>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga mollitia assumenda cumque maiores iure? Ab, harum repudiandae quod magnam cum mollitia vero temporibus nostrum illo? Possimus tempore quos nemo reprehenderit.
+                    {
+                        movie?.overview
+                    }
                 </Text>
 
             </View>
@@ -129,7 +168,7 @@ const styles = StyleSheet.create({
     },
     backButton: {
         borderRadius: 12,
-        backgroundColor: '#EAB308',
+        backgroundColor: theme.background,
         padding: 4
     },
     linearGradient: {
@@ -144,14 +183,16 @@ const styles = StyleSheet.create({
         fontSize: 30,
         lineHeight: 36,
         fontWeight: 'bold',
-        letterSpacing: 0.05
+        letterSpacing: 0.05,
+        marginBottom: 8
     },
     movieStatusText: {
         color: 'rgb(163,163,163)',
         fontWeight: '600',
         fontSize: 16,
         lineHeight: 24,
-        textAlign: 'center'
+        textAlign: 'center',
+        marginBottom: 10
     },
     descriptionText: {
         color: 'rgb(163,163,163)',

@@ -1,5 +1,6 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import { fallbackPersonImage, image185 } from '../../api/moviedb'
 
 export default function Cast({ cast, navigation }) {
     let personName = 'Allu Arjun'
@@ -21,16 +22,17 @@ export default function Cast({ cast, navigation }) {
                                 style={{ marginRight: 16, alignItems: 'center' }}>
                                 <View style={styles.castImageContainer}>
                                     <Image
-                                        source={require('../images/alluarjun.jpg')} style={styles.castImage} />
+                                        // source={require('../images/alluarjun.jpg')} style={styles.castImage} />
+                                        source={{ uri: image185(person?.profile_path) || fallbackPersonImage }} style={styles.castImage} />
                                 </View>
                                 <Text style={{ fontSize: 20, color: 'white', marginTop: 4 }}>
                                     {
-                                        characterName.length > 10 ? characterName.slice(0, 10) + "..." : characterName
+                                        person?.character?.length > 10 ? person?.character.slice(0, 10) + "..." : person?.character
                                     }
                                 </Text>
                                 <Text style={{ fontSize: 16, color: 'rgb(163,163,163)', marginTop: 4 }}>
                                     {
-                                        personName.length > 10 ? personName.slice(0, 10) + "..." : personName
+                                        person?.original_name?.length > 10 ? person?.original_name?.slice(0, 10) + "..." : person?.original_name
                                     }
                                 </Text>
                             </TouchableOpacity>

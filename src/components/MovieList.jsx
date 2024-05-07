@@ -2,11 +2,12 @@ import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, Touc
 import React from 'react'
 import { theme } from '../../theme'
 import { useNavigation } from '@react-navigation/native'
+import { fallbackMoviePoster, image185 } from '../../api/moviedb'
 
 var { width, height } = Dimensions.get('window')
+
 const MovieList = ({ title, data, hideSeeAll }) => {
     const navigation = useNavigation()
-    const movieName = "Ant-Man and the Wasp: Quantumania"
     return (
         <View style={styles.container}>
             <View style={styles.title}>
@@ -26,16 +27,21 @@ const MovieList = ({ title, data, hideSeeAll }) => {
                 contentContainerStyle={{ paddingHorizontal: 15 }}>
 
                 {
-                    data.map((item, index) => {
+                    data?.map((item, index) => {
                         return (
                             <TouchableWithoutFeedback
                                 key={index}
                                 onPress={() => navigation.push('Movie', item)}>
                                 <View style={styles.movieImageContainer}>
                                     <Image
-                                        source={require('../images/antman.jpg')}
+                                        // source={require('../images/antman.jpg')}
+                                        source={{ uri: image185(item.poster_path) || fallbackMoviePoster }}
                                         style={styles.movieImage} />
-                                    <Text style={styles.movieNameText}>{movieName.length > 14 ? movieName.slice(0, 14) + "..." : movieName}</Text>
+                                    <Text style={styles.movieNameText}>
+                                        {
+                                            item?.title?.length > 14 ? item.title.slice(0, 14) + "..." : item.title
+                                        }
+                                    </Text>
                                 </View>
                             </TouchableWithoutFeedback>
                         )
